@@ -1,0 +1,48 @@
+name: PR conventions
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  conventions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Branch naming check
+        run: |
+          BRANCH="${{ github.head_ref }}"
+          if ! echo "$BRANCH" | grep -qE '^(feature|fix|bugfix|chore|docs|refactor|hotfix|release)/'; then
+            echo "::error::Branch must follow: feature/, fix/, bugfix/, chore/, docs/, refactor/, hotfix/, or release/"
+            echo "Current branch: $BRANCH"
+            exit 1
+          fi
+          echo "Branch name OK: $BRANCH"
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Version bump check
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          git show origin/${{ github.base_ref }}:package.json > /tmp/base-package.json
+          export BASE_VER=$(bun -e "console.log(JSON.parse(require('fs').readFileSync('/tmp/base-package.json','utf8')).version)")
+          export HEAD_VER=$(bun -e "console.log(JSON.parse(require('fs').readFileSync('package.json','utf8')).version)")
+          echo "Base version: $BASE_VER, Head version: $HEAD_VER"
+          bun -e "
+            const b = process.env.BASE_VER.split('.').map(Number);
+            const h = process.env.HEAD_VER.split('.').map(Number);
+            const base = b[0]*1e6+(b[1]||0)*1e3+(b[2]||0);
+            const head = h[0]*1e6+(h[1]||0)*1e3+(h[2]||0);
+            if (head <= base) {
+              console.error('Every PR must bump the version in package.json. Base: '+process.env.BASE_VER+', Head: '+process.env.HEAD_VER);
+              process.exit(1);
+            }
+            console.log('Version OK: '+process.env.BASE_VER+' -> '+process.env.HEAD_VER);
+          "
