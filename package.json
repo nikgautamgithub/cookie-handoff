@@ -1,6 +1,6 @@
 {
 	"name": "cookie-handoff",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "AES-256-GCM encrypted cross-subdomain cookie handoff. Edge-native, replay-resistant.",
 	"repository": {
 		"type": "git",
