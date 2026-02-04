@@ -1,0 +1,56 @@
+{
+	"name": "cookie-handoff",
+	"version": "1.0.0",
+	"description": "AES-256-GCM encrypted cross-subdomain cookie handoff. Edge-native, replay-resistant.",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/nikgautamgithub/cookie-handoff.git"
+	},
+	"bugs": "https://github.com/nikgautamgithub/cookie-handoff/issues",
+	"homepage": "https://github.com/nikgautamgithub/cookie-handoff#readme",
+	"license": "MIT",
+	"main": "./dist/index.js",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.js"
+		}
+	},
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"build": "tsup",
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"test": "bun test test/",
+		"prepublishOnly": "bun run build",
+		"pack:dry": "bun run build && bun pm pack",
+		"publish:dry": "bun publish --dry-run"
+	},
+	"keywords": [
+		"edge",
+		"nextjs",
+		"hono",
+		"encryption",
+		"stateless",
+		"session",
+		"cookie",
+		"aes-gcm"
+	],
+	"engines": {
+		"node": ">=18"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"devDependencies": {
+		"prettier": "^3.8.1",
+		"tsup": "^8.5.1",
+		"typescript": "^5"
+	},
+	"author": "Gyunther (https://github.com/nikgautamgithub)"
+}
