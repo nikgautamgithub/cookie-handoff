@@ -46,8 +46,9 @@ async function deriveKey(secret: string): Promise<CryptoKey> {
 /**
  * Encrypts payload with AES-256-GCM, embeds expiration.
  * Returns: "iv_base64url.ciphertext_base64url"
+ * @param payload - Any plain object (JSON-serializable). Interfaces and typed objects are accepted.
  */
-export async function seal<T extends Record<string, unknown>>(
+export async function seal<T extends object>(
 	payload: T,
 	secret: string,
 	ttlSeconds: number = TTL_DEFAULT
